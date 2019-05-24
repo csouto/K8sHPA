@@ -1,4 +1,5 @@
-# Kubernetes and HPA
+# Kubernetes and HPA  
+
 I deployed a simple hello world web app using Flask and instrumented the code to generate custom metrics with the Prometheus official library. I configured Prometheus to scrape the number of HTTP requests per second and used [Prometheus Adapter](https://github.com/helm/charts/tree/master/stable/prometheus-adapter) to pass theses values to the Horizontal Pod Autoscaler (that will scale the number of pods based on that metric).   
 
 To see it in action (the password was emailed to you!): 
@@ -7,14 +8,14 @@ To see it in action (the password was emailed to you!):
   
   
 
-The manifest files are [here](https://github.com/csouto/K8sHPA/tree/master/manifests), and if you want to deploy it yourself just clone this repository and follow the instructions below.
+The manifest files are [here](https://github.com/csouto/K8sHPA/tree/master/manifests), and if you want to deploy it yourself just clone this repository and follow the instructions below.  
+
+  
+## Walkthrough
 
 For this task I decided to build a single-node cluster from scratch on an EC2 instance running Ubuntu 18.04. 
 To bootstrap your environment please paste this  [script](https://github.com/csouto/K8sHPA/blob/master/bootstrap.sh) on your user-data field or SSH into the server and run it.
 
-
-
-## Walkthrough
 I used Helm to do the heavy lifting, to install it just run this script:
 
 ```shell
@@ -80,7 +81,7 @@ helm install stable/prometheus-adapter --name int -f values-adapter.yaml
 sed -i s/urlprom/$PROM/ datasource.yaml
 ```
 
-Create the ConfigMap:
+*Create the ConfigMap:*
 ```shell
 kubectl apply -f datasource.yaml
 ```
@@ -89,18 +90,18 @@ and install Grafana:
 helm install stable/grafana --name ds -f values-grafana.yaml
 ```
   
-Finally the Ingress resource:
+**Finally the Ingress resource:**
 ```shell
 kubectl apply -f manifests/ing-web-ingress.yaml
 ```
   
   
-and the Horizontal Pod Autoscaler:
+**and the Horizontal Pod Autoscaler:**
 ```shell
 kubectl apply -f manifests/hpa.yaml
 ```  
   
   In this scenario Grafana was expose using a NodePort, check the port with `kubectl get svc --namespace default -l "app=grafana" -o jsonpath="{.items[0].spec.ports[0].nodePort}"`.
-  Please use your browser to access it using this port and the external IP of your EC2 instance to import this [dashboard](https://github.com/csouto/K8sHPA/blob/master/dashboard.json).  Get password by running ` kubectl get secret --namespace default ds-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
+  Please use your browser to access it using this port and the external IP of your EC2 instance to import this [dashboard](https://github.com/csouto/K8sHPA/blob/master/dashboard.json).  Get the password by running ` kubectl get secret --namespace default ds-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
   
 Now hopefully everything is configured! Just generate some traffic to <*instance ip*> on port 80 and use grafana or `kubectl describe hpa ` to check it!
