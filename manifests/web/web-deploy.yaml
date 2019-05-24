@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-flask
+  labels:
+    app: web-flask
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-flask
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"     
+      labels:
+        app: web-flask
+    spec:
+      containers:
+      - image: csouto/hello:flask
+        name: hello-world
+        ports:
+        - containerPort: 8000

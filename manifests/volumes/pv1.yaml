@@ -1,0 +1,14 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: prom-alert-volume
+  labels:
+    type: local
+spec:
+  storageClassName: prom-alert
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/prom-alert/"
