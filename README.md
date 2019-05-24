@@ -7,10 +7,10 @@ To see it in action (the password was emailed to you!):
   
   
 
-The manifest files are [here](github.com/csouto/k8sHPA/manifest/), and if you want to deploy it yourself just clone this repository and follow the instructions below.
+The manifest files are [here](https://github.com/csouto/K8sHPA/tree/master/manifests), and if you want to deploy it yourself just clone this repository and follow the instructions below.
 
 For this task I decided to build a single-node cluster from scratch on an EC2 instance running Ubuntu 18.04. 
-To bootstrap your environment please paste this  [script](github.com/csouto/k8sHPA/bootstrap.sh) on your user-data field or SSH into the server and run it.
+To bootstrap your environment please paste this  [script](https://github.com/csouto/K8sHPA/blob/master/bootstrap.sh) on your user-data field or SSH into the server and run it.
 
 
 
@@ -101,6 +101,6 @@ kubectl apply -f manifests/hpa.yaml
 ```  
   
   In this scenario Grafana was expose using a NodePort, check the port with `kubectl get svc --namespace default -l "app=grafana" -o jsonpath="{.items[0].spec.ports[0].nodePort}"`.
-  Please use your browser to access it using this port and the external IP of your EC2 instance to import this [dashboard](github.com/csouto/K8sHPA/dashboard.json).  Get password by running ` kubectl get secret --namespace default ds-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
+  Please use your browser to access it using this port and the external IP of your EC2 instance to import this [dashboard](https://github.com/csouto/K8sHPA/blob/master/dashboard.json).  Get password by running ` kubectl get secret --namespace default ds-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
   
 Now hopefully everything is configured! Just generate some traffic to <*instance ip*> on port 80 and use grafana or `kubectl describe hpa ` to check it!
