@@ -2,11 +2,6 @@
 
 I deployed a simple hello world web app using Flask and instrumented the code to generate custom metrics with the Prometheus official library. I configured Prometheus to scrape the number of HTTP requests per second and used [Prometheus Adapter](https://github.com/helm/charts/tree/master/stable/prometheus-adapter) to pass theses values to the Horizontal Pod Autoscaler (that will scale the number of pods based on that metric).   
 
-To see it in action (the password was emailed to you!): 
-- [Grafana](http://34.200.243.150:32575/)
-- [Web-server](http://34.200.243.150/)  
-  
-  
 
 The manifest files are [here](https://github.com/csouto/K8sHPA/tree/master/manifests), and if you want to deploy it yourself just clone this repository and follow the instructions below.  
 
@@ -104,4 +99,4 @@ kubectl apply -f manifests/hpa.yaml
   In this scenario Grafana was expose using a NodePort, check the port with `kubectl get svc --namespace default -l "app=grafana" -o jsonpath="{.items[0].spec.ports[0].nodePort}"`.
   Please use your browser to access it using this port and the external IP of your EC2 instance to import this [dashboard](https://github.com/csouto/K8sHPA/blob/master/dashboard.json).  Get the password by running ` kubectl get secret --namespace default ds-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
   
-Now hopefully everything is configured! Just generate some traffic to <*instance ip*> on port 80 and use grafana or `kubectl describe hpa ` to check it!
+Now hopefully everything is configured! Just generate some traffic to <*instance ip*> on port 80 and use grafana or `kubectl describe hpa ` to watch pods autoscale!
